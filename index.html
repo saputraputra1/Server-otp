@@ -946,7 +946,7 @@
         }
         
         // Fungsi untuk menangani login
-        function handleLogin(email) {
+        function handleLogin(userData) {
             // Sembunyikan form login
             document.getElementById('authCard').style.display = 'none';
             
@@ -954,8 +954,8 @@
             document.getElementById('serversSection').style.display = 'block';
             
             // Tampilkan info pengguna
-            document.getElementById('userEmail').textContent = email;
-            document.getElementById('userAvatar').textContent = email.charAt(0).toUpperCase();
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('userAvatar').textContent = userData.name.charAt(0).toUpperCase();
             
             // Tampilkan ID perangkat
             const deviceId = generateDeviceId();
@@ -967,10 +967,8 @@
         
         // Fungsi untuk logout
         function handleLogout() {
-            // Hapus status login
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userName');
+            // Hapus status login dari localStorage
+            localStorage.removeItem('loggedInUser');
             
             // Tampilkan form login
             document.getElementById('authCard').style.display = 'block';
@@ -990,9 +988,10 @@
         }
 
         // Fungsi untuk menampilkan notifikasi
-        function showNotification(message) {
+        function showNotification(message, isError = false) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
+            notification.style.backgroundColor = isError ? 'var(--accent)' : 'var(--success)';
             notification.style.display = 'block';
             
             // Sembunyikan notifikasi setelah 3 detik
@@ -1008,25 +1007,33 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             
-            // Validasi input
             if (!email || !password) {
+                showNotification('Email dan password harus diisi.', true);
                 return;
             }
             
-            // Tampilkan loader
-            document.getElementById('loginLoader').style.display = 'block';
-            
-            // Simulasi proses login
-            setTimeout(() => {
-                document.getElementById('loginLoader').style.display = 'none';
-                
-                // Simpan info login
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                
-                // Tampilkan daftar server
-                handleLogin(email);
-            }, 1500);
+            const loader = document.getElementById('loginLoader');
+            loader.style.display = 'block';
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = 'none';
+                if (data.success) {
+                    localStorage.setItem('loggedInUser', JSON.stringify({ email: data.email, name: data.name }));
+                    handleLogin({ email: data.email, name: data.name });
+                } else {
+                    showNotification(data.message, true);
+                }
+            })
+            .catch(err => {
+                loader.style.display = 'none';
+                showNotification('Terjadi kesalahan koneksi.', true);
+            });
         });
 
         // Event listener untuk form registrasi
@@ -1038,35 +1045,40 @@
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
             
-            // Validasi input
             if (!name || !email || !password || !confirmPassword) {
+                showNotification('Semua field harus diisi.', true);
                 return;
             }
             
-            // Validasi konfirmasi password
             if (password !== confirmPassword) {
-                alert('Konfirmasi kata sandi tidak sesuai!');
+                showNotification('Konfirmasi kata sandi tidak sesuai!', true);
                 return;
             }
             
-            // Tampilkan loader
-            document.getElementById('registerLoader').style.display = 'block';
-            
-            // Simulasi proses registrasi
-            setTimeout(() => {
-                document.getElementById('registerLoader').style.display = 'none';
-                
-                // Simpan info pengguna
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', name);
-                
-                // Tampilkan daftar server
-                handleLogin(email);
-                
-                // Tampilkan pesan sukses
-                showNotification('Akun berhasil dibuat!');
-            }, 1500);
+            const loader = document.getElementById('registerLoader');
+            loader.style.display = 'block';
+
+            fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = 'none';
+                if (data.success) {
+                    showNotification('Registrasi berhasil! Silakan login.');
+                    // Pindah ke tab login
+                    document.getElementById('loginTab').click();
+                    document.getElementById('loginEmail').value = email;
+                } else {
+                    showNotification(data.message, true);
+                }
+            })
+            .catch(err => {
+                loader.style.display = 'none';
+                showNotification('Terjadi kesalahan koneksi.', true);
+            });
         });
         
         // Event listener untuk tombol logout
@@ -1112,11 +1124,10 @@
 
         // Cek status login saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            const userEmail = localStorage.getItem('userEmail');
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
             
-            if (isLoggedIn && userEmail) {
-                handleLogin(userEmail);
+            if (loggedInUser) {
+                handleLogin(loggedInUser);
             }
             
             // Generate ID perangkat jika belum ada
