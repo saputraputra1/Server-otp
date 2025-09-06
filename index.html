@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance - Aplikasi Sedang Dalam Perbaikan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50, #1a1a2e);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .maintenance-container {
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            color: #4ecca3;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .maintenance-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            color: #f8b500;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #f8b500;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #eeeeee;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 100px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecca3;
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #eeeeee;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            height: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(90deg, #4ecca3, #2ecc71);
+            border-radius: 10px;
+            animation: progress-animation 3s infinite;
+        }
+        
+        @keyframes progress-animation {
+            0% { width: 65%; }
+            50% { width: 68%; }
+            100% { width: 65%; }
+        }
+        
+        .contact-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .contact-info p {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .admin-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .admin-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .admin-content {
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .admin-content h3 {
+            margin-bottom: 20px;
+            color: #f8b500;
+            text-align: center;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #34495e;
+            background: #1a1a2e;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4ecca3;
+            color: #1a1a2e;
+        }
+        
+        .btn-primary:hover {
+            background: #3cb391;
+        }
+        
+        .btn-secondary {
+            background: #34495e;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #2c3e50;
+        }
+        
+        .background-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(78, 204, 163, 0.1);
+            animation: float 15s infinite;
+        }
+        
+        .circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+        
+        .circle:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+        
+        .circle:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            left: 10%;
+            animation-delay: -10s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .maintenance-container {
+                padding: 30px 20px;
+            }
+            
+            .countdown {
+                flex-wrap: wrap;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .admin-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-elements">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    
+    <div class="admin-panel">
+        <button class="admin-btn" id="adminButton">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+    
+    <div class="maintenance-container">
+        <div class="logo">
+            <h1>ServerApp</h1>
+        </div>
+        
+        <div class="maintenance-icon">
+            <i class="fas fa-tools"></i>
+        </div>
+        
+        <h2>Sedang Dalam Pemeliharaan</h2>
+        
+        <p>Maaf atas ketidaknyamanannya. Kami sedang melakukan pemeliharaan untuk meningkatkan pengalaman Anda. Layanan akan kembali normal dalam:</p>
+        
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-number" id="hours">12</div>
+                <div class="countdown-label">Jam</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="minutes">00</div>
+                <div class="countdown-label">Menit</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number" id="seconds">00</div>
+                <div class="countdown-label">Detik</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <p>Kami melakukan update fitur, peningkatan keamanan, dan optimasi performa. Terima kasih atas kesabaran Anda.</p>
+        
+        <div class="contact-info">
+            <p>Untuk pertanyaan mendesak, hubungi: support@serverapp.com</p>
+            <p>© 2023 ServerApp. All Rights Reserved.</p>
+        </div>
+    </div>
+
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-content">
+            <h3><i class="fas fa-cog"></i> Panel Admin</h3>
+            <div class="input-group">
+                <label for="hoursInput">Jam</label>
+                <input type="number" id="hoursInput" min="0" max="99" value="12">
+            </div>
+            <div class="input-group">
+                <label for="minutesInput">Menit</label>
+                <input type="number" id="minutesInput" min="0" max="59" value="0">
+            </div>
+            <div class="input-group">
+                <label for="secondsInput">Detik</label>
+                <input type="number" id="secondsInput" min="0" max="59" value="0">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="cancelButton">Batal</button>
+                <button class="btn btn-primary" id="saveButton">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default countdown time (12 hours)
+        let countDownDate = new Date();
+        countDownDate.setHours(countDownDate.getHours() + 12);
+        
+        // DOM Elements
+        const hoursElement = document.getElementById("hours");
+        const minutesElement = document.getElementById("minutes");
+        const secondsElement = document.getElementById("seconds");
+        const adminButton = document.getElementById("adminButton");
+        const adminModal = document.getElementById("adminModal");
+        const cancelButton = document.getElementById("cancelButton");
+        const saveButton = document.getElementById("saveButton");
+        const hoursInput = document.getElementById("hoursInput");
+        const minutesInput = document.getElementById("minutesInput");
+        const secondsInput = document.getElementById("secondsInput");
+        
+        // Update the countdown every 1 second
+        const countdownFunction = setInterval(updateCountdown, 1000);
+        
+        // Function to update countdown display
+        function updateCountdown() {
+            // Get current date and time
+            const now = new Date().getTime();
+            
+            // Find the distance between now and the count down date
+            const distance = countDownDate - now;
+            
+            // If the count down is finished
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                hoursElement.innerHTML = "00";
+                minutesElement.innerHTML = "00";
+                secondsElement.innerHTML = "00";
+                return;
+            }
+            
+            // Time calculations for hours, minutes and seconds
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Display the result
+            hoursElement.innerHTML = hours.toString().padStart(2, '0');
+            minutesElement.innerHTML = minutes.toString().padStart(2, '0');
+            secondsElement.innerHTML = seconds.toString().padStart(2, '0');
+        }
+        
+        // Admin panel functionality
+        adminButton.addEventListener("click", function() {
+            // Pre-fill the inputs with current countdown values
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+            
+            if (distance > 0) {
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                hoursInput.value = hours;
+                minutesInput.value = minutes;
+                secondsInput.value = seconds;
+            }
+            
+            adminModal.style.display = "flex";
+        });
+        
+        cancelButton.addEventListener("click", function() {
+            adminModal.style.display = "none";
+        });
+        
+        saveButton.addEventListener("click", function() {
+            // Get values from inputs
+            const hours = parseInt(hoursInput.value) || 0;
+            const minutes = parseInt(minutesInput.value) || 0;
+            const seconds = parseInt(secondsInput.value) || 0;
+            
+            // Calculate total milliseconds
+            const totalMs = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000);
+            
+            // Set new countdown date
+            countDownDate = new Date(Date.now() + totalMs);
+            
+            // Update display immediately
+            updateCountdown();
+            
+            // Close modal
+            adminModal.style.display = "none";
+            
+            // Show confirmation message
+            alert("Timer berhasil diatur!");
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener("click", function(event) {
+            if (event.target === adminModal) {
+                adminModal.style.display = "none";
+            }
+        });
+        
+        // Initialize countdown display
+        updateCountdown();
+    </script>
+</body>
+</html>
